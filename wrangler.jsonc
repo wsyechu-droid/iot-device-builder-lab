@@ -17,7 +17,7 @@
     {
       "binding": "DB",
       "database_name": "iot-device-builder-db",
-      "database_id": "REPLACE_WITH_D1_DATABASE_ID"
+      "database_id": "07b0e3a1-ad4e-402f-abb9-425a02e9e51f"
     }
   ],
   "workers_dev": true
