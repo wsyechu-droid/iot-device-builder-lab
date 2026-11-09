@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#101b2d" />
+  <title>IoT Device Builder Lab</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <script type="importmap">
+    {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.178.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.178.0/examples/jsm/"}}
+  </script>
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <div id="toast" class="toast" role="status"></div>
+  <main id="loginScreen" class="login-screen">
+    <section class="login-brand-panel">
+      <div class="brand large"><div class="brand-symbol">IoT</div><div><strong>DEVICE BUILDER LAB</strong><small>VIRTUAL ENGINEERING STUDIO</small></div></div>
+      <div class="login-hero-copy"><span class="eyebrow light">PRAKTIKUM DIGITAL · D-III TEKNIK KOMPUTER</span><h1>Rancang. Gabungkan.<br><em>Uji perangkatmu.</em></h1><p>Laboratorium IoT virtual untuk belajar memilih sensor, merancang logika, dan menguji enam sistem cerdas.</p></div>
+      <div class="login-device-art" aria-hidden="true"><div class="art-board"><span class="art-chip"></span><i></i><i></i><i></i><b>ESP32</b></div><div class="art-sensor sensor-a">◉<small>ULTRASONIC</small></div><div class="art-sensor sensor-b">⌁<small>SOIL SENSOR</small></div><div class="art-wire"></div></div>
+      <div class="login-foot"><span>INTERACTIVE LEARNING</span><span>·</span><span>SIMULATION LAB</span><span>·</span><span>AI CHALLENGE</span></div>
+    </section>
+    <section class="login-form-panel">
+      <div class="login-card">
+        <div class="eyebrow">SELAMAT DATANG</div><h2>Masuk ke laboratorium</h2><p class="muted">Gunakan NIM dan password yang diberikan dosen.</p>
+        <form id="loginForm" class="form-stack">
+          <label>NIM<input id="loginNim" name="nim" autocomplete="username" placeholder="Contoh: 234101001" required /></label>
+          <label>Password<input id="loginPassword" name="password" type="password" autocomplete="current-password" placeholder="Masukkan password" required /></label>
+          <button class="btn primary full" type="submit">Masuk ke Lab <span>→</span></button>
+        </form>
+        <div class="login-message" id="loginMessage"></div>
+        <div class="login-note"><span class="lock-icon">▣</span><span>Akun mahasiswa dibuat dan dikelola oleh dosen pengampu. Jika lupa password, hubungi dosen.</span></div>
+        <button id="demoButton" class="btn ghost full" type="button">Jelajahi demo tanpa login</button>
+      </div>
+      <div class="login-bottom">IoT Device Builder Lab <span>·</span> Media Pembelajaran Interaktif</div>
+    </section>
+  </main>
+
+  <div id="appShell" class="app-shell hidden">
+    <aside class="sidebar">
+      <div class="brand"><div class="brand-symbol">IoT</div><div><strong>DEVICE BUILDER</strong><small>VIRTUAL ENGINEERING LAB</small></div></div>
+      <div class="workspace-label"><span class="pulse"></span> WORKSPACE PRAKTIKUM</div>
+      <nav id="studentNav" class="side-nav">
+        <button class="side-link active" data-page="builder"><span>⌘</span> Device Builder</button>
+        <button class="side-link" data-page="projects"><span>▤</span> Proyek Saya</button>
+        <button class="side-link" data-page="challenge"><span>✳</span> AI Challenge</button>
+      </nav>
+      <nav id="teacherNav" class="side-nav hidden">
+        <button class="side-link active" data-page="teacher"><span>▦</span> Dashboard Dosen</button>
+        <button class="side-link" data-page="students"><span>♙</span> Kelola Mahasiswa</button>
+        <button class="side-link" data-page="submissions"><span>▤</span> Penilaian Praktikum</button>
+      </nav>
+      <div class="sidebar-bottom"><div class="sidebar-tip"><span class="tip-star">✦</span><b>Eksperimen tanpa batas</b><small>Gabungkan sensor dan aktuator untuk menemukan solusi IoT.</small></div><div class="user-mini"><div id="userAvatar" class="avatar">WS</div><div class="user-mini-text"><b id="userName">Pengguna</b><small id="userRole">Mahasiswa</small></div><button id="logoutButton" class="icon-button" title="Keluar">↪</button></div></div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar"><div><div class="eyebrow">PROGRAM STUDI D-III TEKNIK KOMPUTER <span>/</span> LABORATORIUM IoT</div><h1 id="pageTitle">IoT Device Builder Lab</h1></div><div class="topbar-right"><span id="saveIndicator" class="save-indicator hidden"><i></i><span>Autosave aktif</span></span><button id="helpButton" class="help-button" title="Petunjuk">?</button></div></header>
+
+      <section id="builderPage" class="page">
+        <div class="page-intro"><div><div class="eyebrow accent">VIRTUAL ENGINEERING STUDIO</div><h2>Bangun perangkat IoT dari komponen</h2><p>Pilih salah satu perangkat, gabungkan sensor dan aktuator, atur pin, lalu uji logika kerjanya.</p></div><div class="duration-card"><small>ESTIMASI PRAKTIKUM</small><strong>15–25 <small>menit</small></strong></div></div>
+        <div class="device-grid" id="deviceGrid"></div>
+        <section class="panel scene-panel">
+          <div class="panel-heading"><div><div class="eyebrow">03 / 3D COMPONENT EXPLORER</div><h3>Visualisasi perangkat 3D</h3></div><div class="scene-actions"><span class="scene-status" id="sceneStatus">DESKTOP 3D VIEW</span><button id="arModeButton" class="btn tiny outline">◎ AR</button><button id="vrModeButton" class="btn tiny outline">◉ VR</button></div></div>
+          <div id="threeView" class="three-view"><div class="scene-placeholder">Menyiapkan model 3D…</div></div>
+          <div class="scene-caption"><span>Geser untuk memutar · Scroll untuk zoom</span><span>AR/VR memerlukan perangkat dan browser yang mendukung WebXR</span></div>
+        </section>
+        <div class="builder-layout">
+          <section class="panel build-panel">
+            <div class="panel-heading"><div><div class="eyebrow">01 / DEVICE CONFIGURATION</div><h3>Konfigurasi perangkat</h3></div><span id="deviceCode" class="code-tag">DEVICE 01</span></div>
+            <label class="project-title-label">Nama proyek<input id="projectTitle" maxlength="100" value="Proyek Smart Irrigation" /></label>
+            <div class="component-area"><div class="subheading"><div><b>Komponen terpasang</b><small>Tambahkan atau lepaskan komponen sesuai kebutuhan.</small></div><span id="componentCount" class="count-badge">0 komponen</span></div><div id="selectedComponents" class="selected-components"></div></div>
+            <div class="component-catalog"><div class="subheading"><div><b>Katalog komponen</b><small>Pilih komponen untuk menambahkannya ke perangkat.</small></div></div><div class="catalog-tabs"><button class="catalog-tab active" data-category="all">Semua</button><button class="catalog-tab" data-category="controller">Controller</button><button class="catalog-tab" data-category="sensor">Sensor</button><button class="catalog-tab" data-category="actuator">Aktuator</button><button class="catalog-tab" data-category="display">Display</button></div><div id="componentCatalog" class="catalog-grid"></div></div>
+            <div class="pin-area"><div class="subheading"><div><b>Pemetaan pin</b><small>Ubah pin untuk memahami hubungan perangkat keras.</small></div></div><div id="pinMap" class="pin-map"></div></div>
+          </section>
+          <section class="panel simulation-panel">
+            <div class="panel-heading"><div><div class="eyebrow">02 / LIVE SIMULATION</div><h3>Uji kondisi sensor</h3></div><span class="live-badge"><i></i> LIVE</span></div>
+            <div class="sim-scene"><div class="sim-chip"><div class="chip-logo">µ</div><b id="simDeviceName">Smart Irrigation</b><small id="simControllerName">ESP32 · VIRTUAL CONTROLLER</small></div><div class="sim-connection"><span></span><span></span><span></span></div><div id="simOutputs" class="sim-outputs"></div></div>
+            <div class="simulation-disclaimer">Nilai input adalah data simulasi untuk pembelajaran, bukan pembacaan sensor perangkat fisik.</div><div class="sensor-inputs"><div class="subheading"><div><b>Input sensor</b><small>Geser nilai untuk melihat respons perangkat.</small></div></div><div id="sensorControls"></div></div>
+            <div class="logic-box"><div class="logic-title"><span>⌘</span><b>Logika keputusan perangkat</b></div><p id="logicDescription"></p><div id="logicResult" class="logic-result"></div></div>
+            <div class="simulation-actions"><button id="resetSimulation" class="btn ghost">↺ Reset simulasi</button><button id="saveNow" class="btn subtle">Simpan sekarang</button></div>
+          </section>
+        </div>
+        <section class="bottom-actions"><div><div class="save-status" id="autosaveText"><i></i> Perubahan akan disimpan otomatis</div><small id="projectMeta">Draft baru · Belum dikumpulkan</small></div><div class="action-group"><button id="newProjectButton" class="btn outline">＋ Proyek baru</button><button id="submitProjectButton" class="btn primary">Kumpulkan praktikum <span>→</span></button></div></section>
+      </section>
+
+      <section id="projectsPage" class="page hidden"><div class="page-intro"><div><div class="eyebrow accent">PORTOFOLIO PRAKTIKUM</div><h2>Proyek dan progres saya</h2><p>Semua proyek tersimpan otomatis pada akun Anda.</p></div><button class="btn primary" id="newProjectFromList">＋ Buat proyek</button></div><div id="myProjectsList" class="project-list"></div></section>
+
+      <section id="challengePage" class="page hidden"><div class="page-intro"><div><div class="eyebrow accent">GENERATIVE AI STUDIO</div><h2>Tantangan praktikum adaptif</h2><p>AI membuat variasi skenario berdasarkan perangkat dan komponen yang Anda pilih.</p></div><span class="ai-orb">✳</span></div><div class="ai-layout"><div class="panel ai-config"><div class="eyebrow">GENERATE A CHALLENGE</div><h3>Atur tantangan belajar</h3><label>Perangkat<select id="challengeDevice"></select></label><label>Tingkat kesulitan<select id="challengeDifficulty"><option>Dasar</option><option selected>Menengah</option><option>Lanjut</option></select></label><p class="muted">AI akan menyesuaikan skenario dengan katalog perangkat IoT pada laboratorium ini.</p><button id="generateChallenge" class="btn primary full">✳ Buat tantangan dengan AI</button></div><div class="panel ai-result-panel"><div class="eyebrow">AI-GENERATED LEARNING TASK</div><div id="challengeResult" class="challenge-result"><div class="empty-ai"><span>✳</span><h3>Tantangan belum dibuat</h3><p>Tekan tombol “Buat tantangan dengan AI” untuk menghasilkan skenario praktikum baru.</p></div></div></div></div></section>
+
+      <section id="teacherPage" class="page hidden"><div class="page-intro"><div><div class="eyebrow accent">LECTURER CONSOLE</div><h2>Ringkasan aktivitas praktikum</h2><p>Pantau mahasiswa, proyek yang tersimpan, dan pekerjaan yang sudah dikumpulkan.</p></div><button class="btn outline" id="refreshTeacher">↻ Perbarui data</button></div><div class="stats-grid"><div class="stat-card"><small>MAHASISWA TERDAFTAR</small><strong id="statStudents">0</strong><span>akun aktif</span></div><div class="stat-card"><small>TOTAL PROYEK</small><strong id="statProjects">0</strong><span>draft dan terkumpul</span></div><div class="stat-card"><small>PERLU DINILAI</small><strong id="statPending">0</strong><span>menunggu penilaian</span></div><div class="stat-card"><small>SUDAH DINILAI</small><strong id="statGraded">0</strong><span>nilai tersimpan</span></div></div><div class="panel table-panel"><div class="panel-heading"><div><div class="eyebrow">RECENT ACTIVITY</div><h3>Pengumpulan terbaru</h3></div><button class="text-button" data-goto="submissions">Lihat semua →</button></div><div id="teacherRecent" class="table-wrap"></div></div></section>
+
+      <section id="studentsPage" class="page hidden"><div class="page-intro"><div><div class="eyebrow accent">ACCOUNT MANAGEMENT</div><h2>Kelola akun mahasiswa</h2><p>Dosen membuat akun menggunakan NIM dan password awal. Mahasiswa wajib mengganti password saat login pertama.</p></div></div><div class="teacher-grid"><section class="panel create-student-panel"><div class="eyebrow">CREATE STUDENT ACCOUNT</div><h3>Tambah mahasiswa</h3><form id="studentForm" class="form-stack"><label>Nama lengkap<input id="studentName" required maxlength="100" placeholder="Nama mahasiswa" /></label><label>NIM<input id="studentNim" required maxlength="24" placeholder="Nomor induk mahasiswa" /></label><label>Password awal<input id="studentPassword" required minlength="8" maxlength="128" type="password" autocomplete="new-password" placeholder="Minimal 8 karakter" /></label><button type="submit" class="btn primary full">＋ Buat akun mahasiswa</button></form><div id="studentFormMessage" class="form-message"></div><div class="security-note">Password disimpan dalam bentuk hash. Password awal hanya perlu disampaikan kepada mahasiswa terkait.</div></section><section class="panel student-list-panel"><div class="panel-heading"><div><div class="eyebrow">REGISTERED STUDENTS</div><h3>Daftar mahasiswa</h3></div><span id="studentCount" class="count-badge">0 mahasiswa</span></div><div id="studentTable" class="table-wrap"></div></section></div></section>
+
+      <section id="submissionsPage" class="page hidden"><div class="page-intro"><div><div class="eyebrow accent">ASSESSMENT CENTER</div><h2>Penilaian praktikum</h2><p>Buka proyek mahasiswa, tinjau konfigurasi dan hasil simulasi, lalu berikan nilai serta umpan balik.</p></div><button class="btn outline" id="refreshSubmissions">↻ Refresh</button></div><div class="panel table-panel"><div id="submissionTable" class="table-wrap"></div></div><div id="gradingPanel" class="panel grading-panel hidden"><div class="panel-heading"><div><div class="eyebrow">PROJECT REVIEW</div><h3 id="gradingTitle">Detail proyek</h3></div><button id="closeGrading" class="icon-button">×</button></div><div id="gradingDetails" class="grading-details"></div><div class="grading-form"><label>Nilai (0–100)<input id="gradeScore" type="number" min="0" max="100" step="1" value="85" /></label><label>Umpan balik dosen<textarea id="gradeFeedback" rows="4" placeholder="Tuliskan catatan dan saran perbaikan... "></textarea></label><button id="saveGrade" class="btn primary">Simpan penilaian</button></div></div></section>
+
+      <footer class="app-footer"><span>IoT DEVICE BUILDER LAB</span><span>·</span><span>Media pembelajaran interaktif</span><span class="footer-right" id="footerMode">MODE DEMO</span></footer>
+    </main>
+  </div>
+</body>
+</html>
